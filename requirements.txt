@@ -7,4 +7,4 @@ numpy
 opencv-python-headless
 python-dotenv
 # tensorflow
-tensorflow-cpu
+tensorflow
