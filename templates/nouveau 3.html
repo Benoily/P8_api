@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block body %}
+<main class="main-content">
+    <div class="header-content">
+      <h1 class="title-header">Future Vision Transport</h1>
+    </div>
+    <div class="header-content">
+      <h2 class="subtitle-header">Une entreprise qui conçoit des systèmes embarqués de vision par ordinateur pour les véhicules autonomes</h2>
+    </div>
+    <div class="description-content">
+      <p class="description-text">Cette API vous présente les resultats du modèle de segmentation d’images</p> 
+    </div>
+    <div class="description-content">
+      <p class="description-text">elle prend une image en entrée et fournit la prediction d'image en sortie (prédiction du Mask).</p>
+    </div>
+    <div class="description-content">
+      <p class="italic-text">Un masque est une partie de votre image que l'on souhaite mettre en évidence</p>
+    </div>
+    <div class="form-content">
+        <div class='form'>
+            <form action="/api" method="post">
+                <h2 class="form-header">Veuillez sélectionner un ID </h2>
+                <div class="form-group">
+                    <!--<label for="image_select">ID</label>-->
+                    <select name="image" id="image_select"> {% for image in image_list %} <option value="{{image}}"
+                        SELECTED>{{image_list.index(image)}}</option> {% endfor %} 
+                    </select>
+                </div>
+                <div class="submit-content">
+                  <input type="submit" value="Envoyer" id="submit-button"/>
+                </div>
+                <div id="loading" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: white;">
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    <div class="spinner" ></div>
+                  </div>
+                </div>
+            </form>
+            <script>
+              document.getElementById("submit-button").addEventListener("click", function() {
+                document.getElementById("loading").style.display = "block";
+              });
+              </script>
+        </div>
+    </div>
+  </main>
+  
+{%endblock%}
+              

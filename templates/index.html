@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='style.css')}}">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Classification</title>
+</head>
+<body>
+
+    <div class="container">
+        <!-- code here -->
+        <div class="card">
+            <div class="card-image">
+                <h2 class="card-heading">
+                    Iris Classification
+                </h2>
+            </div>
+            <form class="card-form" action="{{ url_for('home')}}" method="POST">
+			    <h2 class="form-header">Veuillez sélectionner un ID </h2>
+				<div class="form-group">
+				    <!--<label for="image_select">ID</label>-->
+				    <select name="image" id="image_select"> {% for image in image_list %} <option value="{{image}}"
+                        SELECTED>{{image_list.index(image)}}</option> {% endfor %} 
+                    </select>
+                </div>
+                <div class="action">
+                    <button type="submit" class="action-button">Submit</button>
+                </div>
+            </form>
+
+            <center><p style="color: darkred; font-weight: bold;">{{ prediction }}</p>
+		<img src="{{ image }}" alt="{{ prediction }}">
+</center>
+        </div>
+    </div>
+
+</body>
+</html>
