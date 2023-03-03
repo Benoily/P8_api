@@ -1,3 +1,10 @@
-tensorflow==2.11.0
-nltk
-streamlit==1.15.2
+Keras_Preprocessing
+Flask
+gunicorn
+matplotlib
+numpy
+# opencv-python
+opencv-python-headless
+python-dotenv
+# tensorflow
+tensorflow-cpu
