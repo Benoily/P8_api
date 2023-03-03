@@ -1,0 +1,3 @@
+tensorflow==2.11.0
+nltk
+streamlit==1.15.2
