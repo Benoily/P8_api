@@ -26,7 +26,7 @@ def total_loss(y_true, y_pred):
     return loss
 
 # Load model
-model = keras.models.load_model('model_unet_dice_aug.h5', custom_objects={'total_loss': total_loss}, compile=True)
+model = keras.models.load_model('model/model_unet_dice_aug.h5', custom_objects={'total_loss': total_loss}, compile=True)
 
 app =Flask(__name__)
 
