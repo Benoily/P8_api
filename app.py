@@ -1,7 +1,6 @@
 from flask import Flask,request,render_template,url_for
 import tensorflow
 from tensorflow import keras
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import os
 #import pickle
 import numpy as np
@@ -49,7 +48,7 @@ def home():
         image_path = str('data/test/images/' + image)
  
         #image=os.path.join(app.config['UPLOAD_FOLDER'],image)
-        X = img_to_array(load_img(image_path, target_size=(IMG_WIDTH_HEIGHT)))/255
+        X = tensorflow.keras.utils.img_to_array(tensorflow.keras.utils.load_img(image_path, target_size=(IMG_WIDTH_HEIGHT)))/255
         X = np.expand_dims(X, 0)
         prediction = model.predict(X)
         pred_mask = np.argmax(prediction, axis=-1)
