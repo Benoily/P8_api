@@ -1,12 +1,21 @@
-from flask import Flask,request,render_template,url_for
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[2]:
+
+
 import tensorflow
 from tensorflow import keras
-import os
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+
+from flask import Flask, jsonify
+from flask_restful import Api, Resource, reqparse
+
+
 #import pickle
 import numpy as np
 import json
 
-IMG_WIDTH_HEIGHT = (256, 256)
 
 # Fonctions loss
 def dice_coeff(y_true, y_pred):
@@ -25,38 +34,27 @@ def total_loss(y_true, y_pred):
     loss = categorical_crossentropy(y_true, y_pred) + (3*dice_loss(y_true, y_pred))
     return loss
 
-# Load model
-model = keras.models.load_model('model/model_unet_dice_aug.h5', custom_objects={'total_loss': total_loss}, compile=True)
 
-app =Flask(__name__)
+app = Flask(__name__)
+api = Api(app)
 
+# Create parser for the payload data
+parser = reqparse.RequestParser()
+parser.add_argument('data')
 
-@app.route('/')
-def index():
-    image_list = os.listdir('data/test/images')
-    return render_template('index.html', image_list=image_list)
-
-#@app.route('/')
-#def index():
-#    return render_template('index.html')
-
-@app.route('/',methods=['GET','POST'])
-def home():
-    if request.method =='POST':
-        # Retourner le fichier sélectionné
-        image = request.form['image']
-        image_path = str('data/test/images/' + image)
- 
-        #image=os.path.join(app.config['UPLOAD_FOLDER'],image)
-        X = tensorflow.keras.utils.img_to_array(tensorflow.keras.utils.load_img(image_path, target_size=(IMG_WIDTH_HEIGHT)))/255
-        X = np.expand_dims(X, 0)
+# Define how the api will respond to the post requests
+class Classifie(Resource):
+    def post(self):
+        args = parser.parse_args()
+        X = np.array(json.loads(args['data']))
         prediction = model.predict(X)
-        pred_mask = np.argmax(prediction, axis=-1)
-        pred_mask = np.squeeze(pred_mask)
-        print(pred_mask)
-        
-    return render_template('index.html',prediction=pred_mask)
+        return jsonify(prediction.tolist())
+
+api.add_resource(Classifie, '/predict')
 
 
 if __name__ == '__main__':
+    # Load model
+    model = keras.models.load_model('model/model_unet_dice_aug.h5', custom_objects={'total_loss': total_loss}, compile=True)
+
     app.run(debug=True)
