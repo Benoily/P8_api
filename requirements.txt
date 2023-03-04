@@ -1,10 +1,8 @@
-Keras_Preprocessing
 Flask
 gunicorn
-matplotlib
 numpy
 # opencv-python
 opencv-python-headless
 python-dotenv
 # tensorflow
-tensorflow
+tensorflow==2.11.0
