@@ -1,7 +1,7 @@
 from flask import Flask,request,render_template,url_for
 import tensorflow
 from tensorflow import keras
-from keras-preprocessing.image import load_img, img_to_array
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import os
 #import pickle
 import numpy as np
