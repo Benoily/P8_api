@@ -47,8 +47,6 @@ def home():
         # Retourner le fichier sélectionné
         image = request.form['image']
         image_path = str('data/test/images/' + image)
- 
-        #image=os.path.join(app.config['UPLOAD_FOLDER'],image)
         X = img_to_array(load_img(image_path, target_size=(IMG_WIDTH_HEIGHT)))/255
         X = np.expand_dims(X, 0)
         prediction = model.predict(X)
