@@ -4,5 +4,6 @@ numpy
 opencv-python
 opencv-python-headless
 python-dotenv
-tensorflow>=2.2
+tensorflow
 Pillow
+keras
