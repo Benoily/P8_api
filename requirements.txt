@@ -6,4 +6,4 @@ opencv-python-headless
 python-dotenv
 Pillow
 flask_restful
-tensorflow-cpu
+pickle
