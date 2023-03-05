@@ -4,6 +4,6 @@ numpy
 opencv-python
 opencv-python-headless
 python-dotenv
-tensorflow
+tensorflow==2.11.0
 Pillow
 keras
