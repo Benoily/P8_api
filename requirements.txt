@@ -4,5 +4,6 @@ numpy
 opencv-python
 opencv-python-headless
 python-dotenv
-tensorflow
 Pillow
+flask_restful
+tensorflow-cpu
