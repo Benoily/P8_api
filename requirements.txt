@@ -1,9 +1,8 @@
 Flask
 gunicorn
 numpy
-# opencv-python
+opencv-python
 opencv-python-headless
 python-dotenv
-# tensorflow
-tensorflow-cpu
+tensorflow>=2.2
 Pillow
