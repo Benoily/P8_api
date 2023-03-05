@@ -6,4 +6,4 @@ opencv-python-headless
 python-dotenv
 # tensorflow
 tensorflow
-PIL
+
