@@ -1,12 +1,12 @@
 from flask import Flask,request,render_template,url_for
-import tensorflow
-from tensorflow import keras
+#import tensorflow
+#from tensorflow import keras
 #from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import os
 from PIL import Image
 import base64
 from io import BytesIO
-#import pickle
+import pickle
 import numpy as np
 import json
 
@@ -31,7 +31,9 @@ def total_loss(y_true, y_pred):
     return loss
 
 # Load model
-model = keras.models.load_model('model/model_unet_dice_aug.h5', custom_objects={'total_loss': total_loss}, compile=True)
+# Use pickle to load in the pre-trained model.
+with open(f'model_unet_dice_aug.pkl', 'rb') as f:
+        model = pickle.load(f)
 
 app =Flask(__name__)
 
