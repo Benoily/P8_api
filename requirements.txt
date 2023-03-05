@@ -1,9 +1,6 @@
 Flask
 gunicorn
 numpy
-opencv-python
-opencv-python-headless
-python-dotenv
 Pillow
 flask_restful
 tensorflow-cpu
