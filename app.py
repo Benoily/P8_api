@@ -1,17 +1,21 @@
-from flask import Flask,request,render_template,url_for
-#import tensorflow
-#from tensorflow import keras
+"""http://web.univ-ubs.fr/lmba/lardjane/python/c4.pdf -> page 260"""
+
+from flask import Flask, request, jsonify, Response
+import numpy as np
+import cv2
+import os
+from flask import Flask,request,url_for, jsonify
+import tensorflow
+from tensorflow import keras
 #from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import os
 from PIL import Image
 import base64
 from io import BytesIO
-import pickle
+#import pickle
 import numpy as np
 import json
 
-#IMG_WIDTH_HEIGHT = (256, 256)
-img_size = (256, 256)
 
 # Fonctions loss
 def dice_coeff(y_true, y_pred):
@@ -30,53 +34,49 @@ def total_loss(y_true, y_pred):
     loss = categorical_crossentropy(y_true, y_pred) + (3*dice_loss(y_true, y_pred))
     return loss
 
+
+app = Flask(__name__)
+PORT = os.environ.get("PORT")
+
+# Chargement du modèle
 # Load model
-# Use pickle to load in the pre-trained model.
-with open(f'model_unet_dice_aug.pkl', 'rb') as f:
-        model = pickle.load(f)
-
-app =Flask(__name__)
+# Load model
+model = keras.models.load_model('model/model_unet_dice_aug.h5', custom_objects={'total_loss': total_loss}, compile=True)
 
 
-@app.route('/')
-def index():
-    image_list = os.listdir('data/test/images')
-    return render_template('index.html', image_list=image_list)
+# defining a route for only post requests
+@app.route('/predict', methods=['POST'])
+def predict():
+    response = {}
+    try:
+        r = request
+        # convert string of image data to uint8
+        nparr = np.frombuffer(r.data, np.uint8)
+        # decode image
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-#@app.route('/')
-#def index():
-#    return render_template('index.html')
-
-@app.route('/',methods=['POST'])
-def home():
-    if request.method =='POST':
-        # Retourner le fichier sélectionné
-        image = request.form['image']
-        image_path = str('data/test/images/' + image)
+        # build a response dict to send back to client
+        response = {'message': 'image received. size={}x{}'.format(
+            img.shape[1], img.shape[0])}
         
-        with open(image_path, "rb") as f:
-            original_img_b64 = base64.b64encode(f.read())
-            original_img_b64_str = original_img_b64.decode("utf-8")
-        
-            input_img = Image.open(
-            BytesIO(base64.b64decode(original_img_b64))
-        ).resize(img_size)
-        
-            pred_mask = np.squeeze(
-                    np.argmax(
-                        model.predict(np.expand_dims(input_img, 0)), axis=-1
-                    )
-                )
-        #image=os.path.join(app.config['UPLOAD_FOLDER'],image)
-        #X = img_to_array(load_img(image_path, target_size=(IMG_WIDTH_HEIGHT)))/255
-        #X = np.expand_dims(X, 0)
-        #prediction = model.predict(X)
-        #pred_mask = np.argmax(prediction, axis=-1)
-        #pred_mask = np.squeeze(pred_mask)
-        print(pred_mask)
-        
-    return render_template('index.html',prediction=pred_mask)
+        img = img/255
+        x = cv2.resize(img, (256, 256))
+        pred = model.predict(np.expand_dims(x, axis=0))
+        pred_mask = np.argmax(pred, axis=-1)
+        pred_mask = np.expand_dims(pred_mask, axis=-1)
+        pred_mask = np.squeeze(pred_mask)
+
+        # creating a response object
+        # storing the model's prediction in the object
+        response['prediction'] =  pred_mask.tolist()
+    except Exception as e:
+        response['error'] = e
+
+    # returning the response object as json
+    return jsonify(response)
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(port=PORT)
+#     from waitress import serve
+#     serve(app, host='0.0.0.0')
